@@ -10,6 +10,11 @@ solves = []
 class Solve(BaseModel):
     time: float
 
+class SolveResponse(BaseModel):
+    id: int
+    time: float
+
+@app.get("/solves", response_model=list[SolveResponse])
 
 @app.post("/solves")
 def add_solve(solve: Solve):
