@@ -20,7 +20,10 @@ def add_solve(solve: Solve):
 
     cursor = connection.cursor()
 
-    cursor.execute(f"INSERT INTO solves (time) VALUES ({solve.time})")
+    cursor.execute(
+        "INSERT INTO solves (time) VALUES (%s)",
+        (solve.time,)
+    )
 
     connection.commit()
 
@@ -42,6 +45,9 @@ def get_solves():
 
     results = cursor.fetchall()
 
-    cursor.close()
+    connection.close()
 
-    return results
+    return [
+        SolveResponse(id=row[0], time=row[1])
+        for row in results
+    ]
