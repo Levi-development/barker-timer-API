@@ -14,8 +14,6 @@ class SolveResponse(BaseModel):
     id: int
     time: float
 
-@app.get("/solves", response_model=list[SolveResponse])
-
 @app.post("/solves")
 def add_solve(solve: Solve):
     connection = get_connection()
@@ -34,7 +32,7 @@ def add_solve(solve: Solve):
     }
 
 
-@app.get("/solves")
+@app.get("/solves", response_model=list[SolveResponse])
 def get_solves():
     connection = get_connection()
 
