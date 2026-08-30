@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from database import connection
+from database import get_connection
 
 app = FastAPI()
 
@@ -13,6 +13,8 @@ class Solve(BaseModel):
 
 @app.post("/solves")
 def add_solve(solve: Solve):
+    connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(f"INSERT INTO solves (time) VALUES ({solve.time})")
@@ -29,6 +31,8 @@ def add_solve(solve: Solve):
 
 @app.get("/solves")
 def get_solves():
+    connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM solves")
