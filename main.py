@@ -17,10 +17,12 @@ solves = []
 
 class Solve(BaseModel):
     time: float
+    timestamp: float
 
 class SolveResponse(BaseModel):
     id: int
     time: float
+    timestamp: float
 
 @app.post("/solves")
 def add_solve(solve: Solve):
@@ -56,6 +58,6 @@ def get_solves():
     connection.close()
 
     return [
-        SolveResponse(id=row[0], time=row[1])
+        SolveResponse(id=row[0], time=row[1], timestamp=row[2])
         for row in results
     ]
