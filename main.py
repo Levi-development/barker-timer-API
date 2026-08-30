@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import get_connection
@@ -17,12 +18,12 @@ solves = []
 
 class Solve(BaseModel):
     time: float
-    timestamp: float
+    timestamp: datetime
 
 class SolveResponse(BaseModel):
     id: int
     time: float
-    timestamp: float
+    timestamp: datetime
 
 @app.post("/solves")
 def add_solve(solve: Solve):
