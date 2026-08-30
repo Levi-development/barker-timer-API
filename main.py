@@ -1,9 +1,17 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from database import get_connection
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://levibarker.dev"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 solves = []
 
