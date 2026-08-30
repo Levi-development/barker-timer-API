@@ -18,7 +18,6 @@ solves = []
 
 class Solve(BaseModel):
     time: float
-    timestamp: datetime
 
 class SolveResponse(BaseModel):
     id: int
