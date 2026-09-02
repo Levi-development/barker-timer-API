@@ -19,12 +19,14 @@ solves = []
 class Solve(BaseModel):
     time: float
     category: str
+    scramble: str
 
 class SolveResponse(BaseModel):
     id: int
     time: float
     timestamp: datetime
     category: str
+    scramble: str
 
 @app.post("/solves")
 def add_solve(solve: Solve):
@@ -33,7 +35,7 @@ def add_solve(solve: Solve):
     cursor = connection.cursor()
 
     cursor.execute(
-        "INSERT INTO solves (time, category) VALUES (%s, %s)",
+        "INSERT INTO solves (time, category, scramble) VALUES (%s, %s, %s)",
         (solve.time, solve.category)
     )
 
@@ -60,6 +62,6 @@ def get_solves():
     connection.close()
 
     return [
-        SolveResponse(id=row[0], time=row[1], timestamp=row[2], category=row[3])
+        SolveResponse(id=row[0], time=row[1], timestamp=row[2], category=row[3], scramble=row[4])
         for row in results
     ]
