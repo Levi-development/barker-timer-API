@@ -36,7 +36,7 @@ def add_solve(solve: Solve):
 
     cursor.execute(
         "INSERT INTO solves (time, category, scramble) VALUES (%s, %s, %s)",
-        (solve.time, solve.category)
+        (solve.time, solve.category, solve.scramble)
     )
 
     connection.commit()
