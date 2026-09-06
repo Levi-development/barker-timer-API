@@ -36,6 +36,8 @@ class SessionSolve(BaseModel):
 class Session(BaseModel):
     category: str
     startTime: float
+    sessionID: str
+    youtubeVideoID: str | None
     solves: list[SessionSolve]
 
 @app.post("/solves")
@@ -84,13 +86,16 @@ def add_session(session: Session):
     try:
         cursor.execute(
             """
-            INSERT INTO sessions (category, start_time)
-            VALUES (%s, to_timestamp(%s))
+            INSERT INTO sessions (category, start_time, youtube_video_id)
+            VALUES (%s, to_timestamp(%s), %s)
             RETURNING id
             """,
-            (session.category, session.startTime)
+            (
+                session.category,
+                session.startTime,
+                session.youtubeVideoID
+            )
         )
-
         session_id = cursor.fetchone()[0]
 
         for solve in session.solves:
