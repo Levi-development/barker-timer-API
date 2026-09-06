@@ -28,6 +28,16 @@ class SolveResponse(BaseModel):
     category: str
     scramble: str
 
+class SessionSolve(BaseModel):
+    time: float
+    scramble: str
+
+
+class Session(BaseModel):
+    category: str
+    startTime: float
+    solves: list[SessionSolve]
+
 @app.post("/solves")
 def add_solve(solve: Solve):
     connection = get_connection()
@@ -65,3 +75,50 @@ def get_solves():
         SolveResponse(id=row[0], time=row[1], timestamp=row[2], category=row[3], scramble=row[4])
         for row in results
     ]
+
+@app.post("/sessions")
+def add_session(session: Session):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO sessions (category, start_time)
+            VALUES (%s, to_timestamp(%s))
+            RETURNING id
+            """,
+            (session.category, session.startTime)
+        )
+
+        session_id = cursor.fetchone()[0]
+
+        for solve in session.solves:
+            cursor.execute(
+                """
+                INSERT INTO solves (time, category, scramble, session_id)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    solve.time,
+                    session.category,
+                    solve.scramble,
+                    session_id
+                )
+            )
+
+        connection.commit()
+
+        return {
+            "success": True,
+            "session_id": session_id,
+            "solves_uploaded": len(session.solves)
+        }
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        cursor.close()
+        connection.close()
