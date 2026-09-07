@@ -127,3 +127,30 @@ def add_session(session: Session):
     finally:
         cursor.close()
         connection.close()
+
+
+@app.get("/sessions")
+def get_sessions():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT id, category, start_time, youtube_video_id
+        FROM sessions
+        ORDER BY id DESC
+    """)
+
+    results = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return [
+        {
+            "id": row[0],
+            "category": row[1],
+            "startTime": row[2],
+            "youtubeVideoID": row[3]
+        }
+        for row in results
+    ]
