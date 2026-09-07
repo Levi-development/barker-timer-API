@@ -135,9 +135,18 @@ def get_sessions():
     cursor = connection.cursor()
 
     cursor.execute("""
-        SELECT id, category, start_time, youtube_video_id
-        FROM sessions
-        ORDER BY id DESC
+        SELECT
+            s.id,
+            s.category,
+            s.start_time,
+            s.youtube_video_id,
+            so.id,
+            so.time,
+            so.timestamp,
+            so.scramble
+        FROM sessions s
+        LEFT JOIN solves so ON so.session_id = s.id
+        ORDER BY s.id DESC, so.id ASC
     """)
 
     results = cursor.fetchall()
@@ -145,12 +154,26 @@ def get_sessions():
     cursor.close()
     connection.close()
 
-    return [
-        {
-            "id": row[0],
-            "category": row[1],
-            "startTime": row[2],
-            "youtubeVideoID": row[3]
-        }
-        for row in results
-    ]
+    sessions = {}
+
+    for row in results:
+        session_id = row[0]
+
+        if session_id not in sessions:
+            sessions[session_id] = {
+                "id": row[0],
+                "category": row[1],
+                "startTime": row[2],
+                "youtubeVideoID": row[3],
+                "solves": []
+            }
+
+        if row[4] is not None:
+            sessions[session_id]["solves"].append({
+                "id": row[4],
+                "time": row[5],
+                "timestamp": row[6],
+                "scramble": row[7]
+            })
+
+    return list(sessions.values())
