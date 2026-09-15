@@ -31,6 +31,7 @@ class SolveResponse(BaseModel):
 class SessionSolve(BaseModel):
     time: float
     scramble: str
+    videoTimestamp: float
 
 
 class Session(BaseModel):
