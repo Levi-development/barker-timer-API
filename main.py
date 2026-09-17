@@ -151,12 +151,12 @@ def get_sessions():
             so.id,
             so.time,
             so.timestamp,
-            so.scramble
+            so.scramble,
+            so.video_timestamp
         FROM sessions s
         LEFT JOIN solves so ON so.session_id = s.id
         ORDER BY s.id DESC, so.id ASC
     """)
-
     results = cursor.fetchall()
 
     cursor.close()
@@ -181,7 +181,8 @@ def get_sessions():
                 "id": row[4],
                 "time": row[5],
                 "timestamp": row[6],
-                "scramble": row[7]
+                "scramble": row[7],
+                "videoTimestamp": row[8]
             })
 
     return list(sessions.values())
