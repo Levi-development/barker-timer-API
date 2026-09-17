@@ -102,14 +102,21 @@ def add_session(session: Session):
         for solve in session.solves:
             cursor.execute(
                 """
-                INSERT INTO solves (time, category, scramble, session_id)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO solves (
+                    time,
+                    category,
+                    scramble,
+                    session_id,
+                    video_timestamp
+                )
+                VALUES (%s, %s, %s, %s, %s)
                 """,
                 (
                     solve.time,
                     session.category,
                     solve.scramble,
-                    session_id
+                    session_id,
+                    solve.videoTimestamp
                 )
             )
 
